@@ -20,6 +20,10 @@ class openscad_controller():
         os.environ["DISPLAY"]=self.DISPLAY_ID
         print('initialized succesfully, self display id = %s'%(self.DISPLAY_ID))
 
+    def stop_xserver(self):
+        mycmd='sudo ' + self.virtualfb_path +' stop'
+        s = "".join(os.popen(mycmd).readlines())
+        
     def render_png(self, program_path, output_path, imgsize=(512,512), camera_pose=(0,0,0,55,0,25,140)):
         """_summary_
 

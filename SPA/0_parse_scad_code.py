@@ -564,11 +564,12 @@ class FileAnalysisTestCase(unittest.TestCase):
         self.assertEqual(messages[0].code, "W1001")
 
 if __name__ == '__main__':
-    #here is the usage example
-    test = FileAnalysisTestCase()
-    test.setUp()
-    file_path= 'examples/input_codes/bike.scad'
+    # here is the usage example
+    parser = FileAnalysisTestCase()
+    parser.setUp()
+    file_path= 'examples/stage0/input_codes/bike.scad'
+    # don't change the placeholder unless you know what is going on
     placeholder = '//gt label: ***\ncolor([0,0,0])'
-    output_path = 'examples/results/bike_with_holder.scad'
-    test.CADTalk_parser(file_path,output_path,placeholder,visualize_ast=True)
+    output_path = 'examples/stage0/results/bike_with_holder.scad'
+    parser.CADTalk_parser(file_path,output_path,placeholder,visualize_ast=True)
 

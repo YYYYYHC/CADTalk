@@ -1,11 +1,8 @@
 from utils.openscad import openscad_controller as ocontroller
 from utils.program import program_controller as pcontroller
 import os
-from itertools import product
 import cv2 as cv
 import numpy as np
-from matplotlib import pyplot as plt
-import time
 from tqdm import tqdm
 import pdb
 
@@ -56,7 +53,6 @@ class rendering_solver():
         for i in range(self.block_nums):
             self.pcontroller.uncomment_color_block(i)
             self.pcontroller.change_block_color(i, (0,0,0))
-            pdb.set_trace()
             for j in range(self.block_nums):
                 if j==i:
                     continue
@@ -128,25 +124,27 @@ class rendering_solver():
     
     def render(self): #single edition
         #stage.1 prepare input data
+        
         self.prepare_init_figure()
         self.register_pixel2block_2()
+    def stop(self):
+        self.ocontroller.stop_xserver()
 
-def render_multi_view(working_dir='', program_dir ='',model_path=''):
+def render_multi_view(working_dir='', program_dir ='',model_path='',virtualfb_path=''):
     init_xserver=True
     grouping_res_all = []
-    # program_path = os.path.join(base_dir,'OpenSCADPrograms','motor_plain2.scad')
-    
-    # for rz in [i*18 for i in range(20)]:
     for program_name in tqdm(os.listdir(program_dir)):
         os.system("rm -rf "+ os.path.join(working_dir,program_name))
         os.mkdir(os.path.join(working_dir,program_name))
         for rz in [i*36 for i in range(10)]:
-            camera_pose=(0,0,0,65,0,rz,260)
+            camera_pose=(0,0,0,65,0,rz,500)
+            # camera_pose=(0,0,0,314,rz,359,140)
+
             
             res_path = os.path.join(working_dir,program_name,'rz={}'.format(rz))
             gs = rendering_solver(program_path=os.path.join(program_dir,program_name),
                                         output_dir=res_path,
-                                        virtualfb_path = '/home/cli7/yhc_Workspace/virtualfb/virtualfb.sh',
+                                        virtualfb_path = virtualfb_path,
                                         camera_pose=camera_pose,
                                         init_xserver=init_xserver)
             if rz == 0:
@@ -159,7 +157,13 @@ def render_multi_view(working_dir='', program_dir ='',model_path=''):
             gs.render()
             
             init_xserver=False  
+        gs.stop()
         # break
     return grouping_res_all
 
-render_multi_view('/home/cli7/yhc_Workspace/SPA/test/wd',  "/home/cli7/yhc_Workspace/SPA/test/pd",'/home/cli7/yhc_Workspace/SPA/test/md')
+if __name__ == "__main__":
+    wd = '/home/yyyyyhc/gitCADTalk/CADTalk/examples/stage1/working_dir'
+    pd = '/home/yyyyyhc/gitCADTalk/CADTalk/examples/stage1/program_dir'
+    md = '/home/yyyyyhc/gitCADTalk/CADTalk/examples/stage1/model_dir'
+    vfb = '/home/yyyyyhc/gitCADTalk/CADTalk/virtualfb/virtualfb.sh'
+    render_multi_view(working_dir=wd, program_dir=pd, model_path=md, virtualfb_path=vfb)
