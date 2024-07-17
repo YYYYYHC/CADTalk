@@ -39,7 +39,7 @@ class rendering_solver():
         #record for SAM to use
         self.init_figure_path = os.path.join(self.output_dir, init_figure_name)
         self.ocontroller.render_png(self.program_path, output_path=self.init_figure_path, camera_pose=self.camera_pose)
-    def register_pixel2block_2(self):
+    def register_pixel2block(self):
         #get block list
         self.pcontroller.init_blocks_plus()
         
@@ -79,45 +79,7 @@ class rendering_solver():
         np.save(save_dict_path, save_block_dict)
         
         print("registred")
-    def register_pixel2block(self):
-        #get block list
-        self.pcontroller.init_blocks_plus()
-        
-        self.block_nums = len(self.pcontroller.blocks)
-        
-        #get block colors for tmp_init.png
-        color_code = np.random.uniform(0.2, 0.7, [self.block_nums, 3])
-        
-        #register pixel to color code
-        pixel2code=-1*np.ones([RESOLUTION,RESOLUTION]) #-1 for background
-        for i in range(self.block_nums):
-            self.pcontroller.change_block_color(i, (color_code[i][0], color_code[i][1], color_code[i][2]))
-            for j in range(self.block_nums):
-                if j==i:
-                    continue
-                self.pcontroller.change_block_color(j,(0,0,0))
-            self.pcontroller.save_res(os.path.join(self.output_dir, "pos_encoded.scad"))
-            self.ocontroller.render_png(os.path.join(self.output_dir, "pos_encoded.scad"), output_path=os.path.join(self.output_dir,"pos_encoded.png"),camera_pose=self.camera_pose,imgsize=(RESOLUTION,RESOLUTION))
-            pos_encode_fig = cv.imread(os.path.join(self.output_dir,"pos_encoded.png"))
-            pos_encode_fig = cv.cvtColor(pos_encode_fig, cv.COLOR_BGR2RGB)
-            bg_color = pos_encode_fig[0,0] 
-            bg_region = np.abs(np.sum(pos_encode_fig - bg_color,axis=2)) < 1
-            black_region = np.abs(np.sum(pos_encode_fig,axis=2)) < 1
-            interested_region = np.logical_and(np.logical_not(bg_region), np.logical_not(black_region))
-            pixel2code[interested_region] = i
-        self.pixel2block = pixel2code
-        self.blockarea = np.zeros([self.block_nums])
-        bn, bs = np.unique(self.pixel2block, return_counts=True)
-        self.blockarea[np.int64(bn)] = bs #get all block areas
-        save_block_dict = {
-            "pixel2block": self.pixel2block,
-            "blockarea": self.blockarea,
-            "blocknums": self.block_nums
-        }
-        save_dict_path = os.path.join(self.output_dir, "pixel2block.npy")
-        np.save(save_dict_path, save_block_dict)
-        
-        print("registred")
+    
     
     def get_3d(self, path_3d):
         self.ocontroller.get_3d(self.program_path, output_path=path_3d)
@@ -126,7 +88,7 @@ class rendering_solver():
         #stage.1 prepare input data
         
         self.prepare_init_figure()
-        self.register_pixel2block_2()
+        self.register_pixel2block()
     def stop(self):
         self.ocontroller.stop_xserver()
 
@@ -137,9 +99,8 @@ def render_multi_view(working_dir='', program_dir ='',model_path='',virtualfb_pa
         os.system("rm -rf "+ os.path.join(working_dir,program_name))
         os.mkdir(os.path.join(working_dir,program_name))
         for rz in [i*36 for i in range(10)]:
+            #for bike example
             camera_pose=(0,0,0,65,0,rz,500)
-            # camera_pose=(0,0,0,314,rz,359,140)
-
             
             res_path = os.path.join(working_dir,program_name,'rz={}'.format(rz))
             gs = rendering_solver(program_path=os.path.join(program_dir,program_name),
