@@ -27,3 +27,4 @@ Thumbs.db
 
 # Ignore pycache
 SPA/utils/__pycache__/
+virturalfb.*
