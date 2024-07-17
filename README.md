@@ -17,9 +17,9 @@ We use ControlNet for img-to-img conversion, and Grounded-SAM for semantic segme
 This file takes as input an arbitrary .scad file, and output all the 'to be commented' locations by adding placeholders to those locations.
 
 The core function is the 'CADTalk_parser' function. Run with 
-'''
-python SPA/0_parse_scad_code.py
-'''
+
+    python SPA/0_parse_scad_code.py
+
 for an example and usage
 
 ## stage1: SPA/1_render_multiview.py
@@ -40,18 +40,18 @@ This file is to produce depth image for the program. The input is the working_di
 
 The script requires blender to execute. Install blender and run it with
 
-'''
-blender ./SPA/2_get_depth.blend --background --python ./SPA/2_get_depth.py 
-'''
+
+    blender ./SPA/2_get_depth.blend --background --python ./SPA/2_get_depth.py 
+
 
 You will find the depth image under working_dir with the name as depth0001.png
 
 ** For 'Unable to open a display' issue, the solution is:
-1. run sudo ./virtualfb/virtualfb.sh
+1. run ``sudo ./virtualfb/virtualfb.sh `` 
 2. you will see output like 'DISPLAY=:567'
-3. run export DISPLAY=:567
+3. run ``export DISPLAY=:567``
 4. retry the blender script
-5. run sudo ./virtualfb/virtualfb.sh stop
+5. run ``sudo ./virtualfb/virtualfb.sh stop`` to quit the virtualfb
 
 You can avoid using blender by implementing your own depth-rendering tool.
 
