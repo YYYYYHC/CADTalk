@@ -6,7 +6,7 @@ We use ControlNet for img-to-img conversion, and Grounded-SAM for semantic segme
 
 # ToDo
 
-- [ ] Release Usage and Data
+- [ ] Release Usage and Data (on going, hopefully done before Aug 2024)
 - [ ] Provide a Notebook version
 - [ ] Make codes... readable
 
