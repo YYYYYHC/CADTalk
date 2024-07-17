@@ -10,8 +10,7 @@ def eulerAngles2rotationMat(theta, format='degree'):
     """
     Calculates Rotation Matrix given euler angles.
     :param theta: 1-by-3 list [rx, ry, rz] angle in degree
-    :return:
-    RPY角，是ZYX欧拉角，依次 绕定轴XYZ转动[rx, ry, rz]
+    :return: 3-by-3 matrix
     """
     if format == 'degree':
         theta = [i * math.pi / 180.0 for i in theta]
