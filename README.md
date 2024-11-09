@@ -6,9 +6,13 @@ We use ControlNet for img-to-img conversion, and Grounded-SAM for semantic segme
 
 # ToDo
 
-- [ ] Release Usage and Data (on going, hopefully done before Aug 2024)
+- [x] Release Usage and Data 
 - [ ] Provide a Notebook version
 - [ ] Make codes... readable
+
+# Data
+
+The dataset is avilable (here)[https://drive.google.com/file/d/1NfqRnPEafU0wSYYCJejLH5tpepTGZpEO/view]. Dataset_V1 and V2 are for different abstraction levels, i.e. primitive numbers. Since the dataset has not been throughly reviewed, we also release our labelling tool (here)[https://drive.google.com/file/d/1NfqRnPEafU0wSYYCJejLH5tpepTGZpEO/view]
 
 # Usage
 
@@ -71,3 +75,36 @@ This stage convert depth images to realistic images with ControlNet
 2. Under the ControlNet folder, conduct depth-to-image with
 
         python ./3_controlnet.py
+
+## stage3: Grounded-Segment-Anything/4_prediction.py
+
+The file is to conduct open-vocabulary image segmentation based on the generated images.
+
+1. Setup Grounded SAM by:
+
+        cd Grounded-Segment-Anything
+        make build-image
+        
+**Notice1 :** The dockerfile has been modified
+**Notice2 :** For issue regrading installing GSA, please refer to their (official page)[https://github.com/IDEA-Research/Grounded-Segment-Anything]
+
+2. Run prediction (DINO + SAM) with:
+
+        make run #you will enter a terminal
+        cd Grounded-Segment-Anything/
+        python 4_prediction.py 
+
+You will have result under examples/stage3
+
+## stage4: SPA/5_voting.py
+
+With numpy installed:
+
+        python SPA/5_voting.py
+
+You will have the annotated code under examples/stage4
+
+**Notice!!! :** We tried to visualize the code label in OpenSCAD, however, this only works for abstracted shape. You will see incorrect color display due to their complex program structure for instances from dataset_Real.
+
+
+

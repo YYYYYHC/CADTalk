@@ -37,10 +37,8 @@ ifeq (,$(wildcard ./groundingdino_swint_ogc.pth))
 endif
 	docker run --gpus all -it --rm --net=host --privileged \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \
-	-v "${PWD}":/home/appuser/working_dir \
-	-v /home/cli7/yhc_Workspace/data:/home/appuser/data \
-	-v /home/cli7/yhc_Workspace/prediction_res:/home/appuser/prediction_res \
-	-v /home/cli7/yhc_Workspace/data/info:/home/appuser/info_fov12.5 \
+	-v ./:/home/appuser/Grounded-Segment-Anything \
+	-v /home/yhc/CADTalk/examples:/home/appuser/examples \
 	-e DISPLAY=$DISPLAY \
 	--name=gsa \
 	--ipc=host -it gsa:v0
