@@ -41,3 +41,4 @@ ControlNet/__pycache__/
 *.bmp
 *.tiff
 *.gif
+*.npy
