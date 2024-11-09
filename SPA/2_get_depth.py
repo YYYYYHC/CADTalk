@@ -10,7 +10,8 @@ def eulerAngles2rotationMat(theta, format='degree'):
     """
     Calculates Rotation Matrix given euler angles.
     :param theta: 1-by-3 list [rx, ry, rz] angle in degree
-    :return: 3-by-3 matrix
+    :return:
+    RPY角，是ZYX欧拉角，依次 绕定轴XYZ转动[rx, ry, rz]
     """
     if format == 'degree':
         theta = [i * math.pi / 180.0 for i in theta]
@@ -43,8 +44,8 @@ def mat_mult_vec(mat, vec):
     return [sum(m * v for m, v in zip(mat_row, vec)) for mat_row in mat]
 
 def rxyz2xyz(rx, ry, rz, distance):
-    initial_pos = [0, -distance, 0]
-    rm = eulerAngles2rotationMat([rx, -rz, ry], format='degree')
+    initial_pos = [0, 0, distance]
+    rm = eulerAngles2rotationMat([rx, ry, rz], format='degree')
     res_pos = mat_mult_vec(rm, initial_pos)
     return res_pos
 
@@ -83,13 +84,13 @@ for f in os.listdir(model_dir):
     bpy.ops.import_mesh.stl(filepath=(os.path.join(model_dir, f, 'model.stl')))
     current_model = bpy.context.selected_objects[0]
     bpy.data.objects["Camera"].constraints["Track To"].target = current_model
-    current_model.rotation_euler[0] = math.pi / 2
+    # current_model.rotation_euler[0] = math.pi / 2
 
     for ry in [i * 36 for i in range(10)]:
+        print('processing:', ry)
         bpy.data.scenes['Scene'].node_tree.nodes["File Output"].base_path = \
         os.path.join(working_dir, f, f'rz={ry}')
         bpy.data.scenes['Scene'].node_tree.nodes["File Output"].file_slots[0].path = "depth"
-        rx, ry, rz = [328, ry, 359]
         rx, ry, rz = [65, 0, ry]
         distance = 500
         
@@ -101,3 +102,4 @@ for f in os.listdir(model_dir):
             camera.location[i] = xyz[i]
         
         bpy.ops.render.render()
+        

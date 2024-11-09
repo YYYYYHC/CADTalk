@@ -25,6 +25,19 @@
 .DS_Store
 Thumbs.db
 
+blender/
 # Ignore pycache
 SPA/utils/__pycache__/
 virturalfb.*
+virtualfb.DISPLAY
+virtualfb.PID
+ControlNet/__pycache__/
+*.ckpt
+*.pyc
+*.pth
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.tiff
+*.gif

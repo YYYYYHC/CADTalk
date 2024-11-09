@@ -26,9 +26,9 @@ kernel_15[-1,-1] = 1/4
 preprocessor = None
 
 model_name = 'control_v11f1p_sd15_depth'
-model = create_model(f'/mnt/yhc/controlnetModels/{model_name}.yaml').cpu()
-model.load_state_dict(load_state_dict('/mnt/yhc/controlnetModels/v1-5-pruned.ckpt', location='cuda'), strict=False)
-model.load_state_dict(load_state_dict('/mnt/yhc/controlnetModels/control_v11f1p_sd15_depth.pth', location='cuda'), strict=False)
+model = create_model(f'./models/{model_name}.yaml').cpu()
+model.load_state_dict(load_state_dict('./models/v1-5-pruned.ckpt', location='cuda'), strict=False)
+model.load_state_dict(load_state_dict('./models/control_v11f1p_sd15_depth.pth', location='cuda'), strict=False)
 model = model.cuda()
 ddim_sampler = DDIMSampler(model)
 
@@ -98,8 +98,8 @@ def GM_filter(imgpath, use_filter=True):
     image = cv2.imread(imgpath,  cv2.IMREAD_GRAYSCALE)
     if not use_filter:
         return image
-    kernel = np.ones((5, 5), np.uint8)  # 这里创建了一个5x5的矩形核
-    dilation = cv2.dilate(image, kernel, iterations=5)
+    kernel = np.ones((5, 5), np.uint8)  
+    dilation = cv2.dilate(image, kernel, iterations=2)
     if '.jpg' in imgpath:
         cv2.imwrite(imgpath.replace('.jpg', '_dilation.jpg'), dilation)
     elif '.png' in imgpath:
@@ -133,12 +133,9 @@ def process_2(det, prompt, a_prompt, n_prompt, num_samples, image_resolution, de
     print('processing',depth_img_path)
 
     for ry in [i*36 for i in range(10)]:
-        # save_path = os.path.join(depth'/root/autodl-tmp/0717car', f'rz={rz}')
         seed = random.randint(1111,111111)
         save_path = os.path.join(depth_img_path, f'rz={ry}')
-        dip = os.path.join(depth_img_path, 'rz={}'.format(ry),f'{ry}.jpg')
-        # di = Image.open(dip)
-        # input_depth_image = np.array(di)
+        dip = os.path.join(depth_img_path, 'rz={}'.format(ry),f'depth0001.png')
         input_depth_image = GM_filter(dip,USE_FILTER)
         results = process(ry, det, input_depth_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, detect_resolution, ddim_steps, guess_mode, strength, scale, seed, eta)[1:]
         for i in range(len(results)):
@@ -148,15 +145,9 @@ def process_2(det, prompt, a_prompt, n_prompt, num_samples, image_resolution, de
 
 if __name__ == '__main__':
     det = 'None'
-    config_path = '/home/cli7/yhc_Workspace/SPA/real_exp/config.json'
-    with open(config_path, 'r') as file:
-    # 读取文件并将JSON转换为字典
-        config_data = json.load(file)
-    instance_name = config_data['world_info']['current_instance']
-    depth_folder_path = os.path.join(config_data["world_info"]["depth_folder_base_path"],config_data[instance_name]["cube_name"] )
-    # print(depth_folder_path)
-    # det = 'Depth_Zoe'
-    typename = config_data[instance_name]["type"]
+
+    depth_folder_path = "../examples/stage1/working_dir/bike_with_holder.scad"
+    typename = "bike"
     prompt = f'{typename}'
     a_prompt = 'best quality'
     n_prompt = 'lowres, holes, bad anatomy, bad hands, cropped, worst quality'
