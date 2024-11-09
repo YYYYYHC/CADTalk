@@ -12,7 +12,7 @@ We use ControlNet for img-to-img conversion, and Grounded-SAM for semantic segme
 
 # Data
 
-The dataset is avilable (here)[https://drive.google.com/file/d/1NfqRnPEafU0wSYYCJejLH5tpepTGZpEO/view]. Dataset_V1 and V2 are for different abstraction levels, i.e. primitive numbers. Since the dataset has not been throughly reviewed, we also release our labelling tool (here)[https://drive.google.com/file/d/1NfqRnPEafU0wSYYCJejLH5tpepTGZpEO/view]
+The dataset is avilable [here](https://drive.google.com/file/d/1NfqRnPEafU0wSYYCJejLH5tpepTGZpEO/view). Dataset_V1 and V2 are for different abstraction levels, i.e. primitive numbers. Since the dataset has not been throughly reviewed, we also release our labelling tool [here](https://drive.google.com/file/d/1NfqRnPEafU0wSYYCJejLH5tpepTGZpEO/view)
 
 # Usage
 
@@ -42,11 +42,12 @@ the registration is used to conduct the voting, we achieve this by change block 
 
 This file is to produce depth image for the program. The input is the working_dir and model_dir specified in the previous stage. Change the two paths in 2_get_depth.py
 
-The script requires blender to execute. Install (blender3.2)[https://download.blender.org/release/Blender3.2/] and run it with
+The script requires blender to execute. Install [blender3.2](https://download.blender.org/release/Blender3.2/) and run it with
 
 
     [path_to_blender3.2/blender] ./SPA/2_get_depth.blend --background --python ./SPA/2_get_depth.py 
 
+**Notice :** Blender 4.x will produce low-contrast depth maps, that is because the background depth is considered in the 'normalize' node.
 
 You will find the depth image under working_dir with the name as depth0001.png
 
@@ -86,7 +87,7 @@ The file is to conduct open-vocabulary image segmentation based on the generated
         make build-image
         
 **Notice1 :** The dockerfile has been modified
-**Notice2 :** For issue regrading installing GSA, please refer to their (official page)[https://github.com/IDEA-Research/Grounded-Segment-Anything]
+**Notice2 :** For issue regrading installing GSA, please refer to their [official page](https://github.com/IDEA-Research/Grounded-Segment-Anything)
 
 2. Run prediction (DINO + SAM) with:
 
